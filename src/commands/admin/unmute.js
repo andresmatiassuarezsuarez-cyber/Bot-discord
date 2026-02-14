@@ -18,12 +18,6 @@ export default {
     await member.timeout(null);
 
     interaction.reply(`🔊 **${user.tag}** ha sido desmuteado.`);
-
-    const logChannel = interaction.guild.channels.cache.find(c => c.name === "logs");
-    if (logChannel) {
-      logChannel.send(`🔊 **Unmute aplicado**
-👤 Usuario: ${user.tag}
-🛠 Staff: ${interaction.user.tag}`);
-    }
   }
 };
+
