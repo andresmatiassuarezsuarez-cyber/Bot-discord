@@ -25,15 +25,6 @@ export default {
     await member.timeout(minutes * 60 * 1000, "Mute aplicado");
 
     interaction.reply(`🔇 **${user.tag}** ha sido muteado por **${minutes} minutos**.`);
-
-    const logChannel = interaction.guild.channels.cache.find(c => c.name === "logs");
-    if (logChannel) {
-      logChannel.send(`🔇 **Mute aplicado**
-👤 Usuario: ${user.tag}
-⏳ Duración: ${minutes} minutos
-🛠 Staff: ${interaction.user.tag}`);
-    }
   }
 };
-
 
