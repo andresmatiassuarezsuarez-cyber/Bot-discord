@@ -33,13 +33,6 @@ export default {
     await member.ban({ reason });
 
     interaction.reply(`⛔ **${user.tag}** fue baneado.\n📝 Razón: **${reason}**`);
-
-    const logChannel = interaction.guild.channels.cache.find(c => c.name === "logs");
-    if (logChannel) {
-      logChannel.send(`⛔ **Ban ejecutado**
-👤 Usuario: ${user.tag}
-🛠 Staff: ${interaction.user.tag}
-📝 Razón: ${reason}`);
-    }
   }
 };
+
