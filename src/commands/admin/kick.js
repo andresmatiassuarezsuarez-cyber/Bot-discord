@@ -32,16 +32,6 @@ export default {
 
     await member.kick(reason);
 
-    interaction.reply({
-      content: `✅ **${user.tag}** fue expulsado.\n📝 Razón: **${reason}**`
-    });
-
-    const logChannel = interaction.guild.channels.cache.find(c => c.name === "logs");
-    if (logChannel) {
-      logChannel.send(`🔨 **Kick ejecutado**
-👤 Usuario: ${user.tag}
-🛠 Staff: ${interaction.user.tag}
-📝 Razón: ${reason}`);
-    }
+    interaction.reply(`👢 **${user.tag}** fue expulsado.\n📝 Razón: **${reason}**`);
   }
 };
