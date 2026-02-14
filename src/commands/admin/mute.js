@@ -1,6 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("mute")
     .setDescription("Silencia a un usuario.")
@@ -28,10 +28,11 @@ module.exports = {
 
     const logChannel = interaction.guild.channels.cache.find(c => c.name === "logs");
     if (logChannel) {
-      logChannel.send(`🔇 **Mute aplicado**  
-👤 Usuario: ${user.tag}  
-⏳ Duración: ${minutes} minutos  
+      logChannel.send(`🔇 **Mute aplicado**
+👤 Usuario: ${user.tag}
+⏳ Duración: ${minutes} minutos
 🛠 Staff: ${interaction.user.tag}`);
     }
   }
 };
+
