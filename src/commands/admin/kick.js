@@ -1,6 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("kick")
     .setDescription("Expulsa a un usuario del servidor.")
@@ -36,12 +36,11 @@ module.exports = {
       content: `✅ **${user.tag}** fue expulsado.\n📝 Razón: **${reason}**`
     });
 
-    // LOGS
     const logChannel = interaction.guild.channels.cache.find(c => c.name === "logs");
     if (logChannel) {
-      logChannel.send(`🔨 **Kick ejecutado**  
-👤 Usuario: ${user.tag}  
-🛠 Staff: ${interaction.user.tag}  
+      logChannel.send(`🔨 **Kick ejecutado**
+👤 Usuario: ${user.tag}
+🛠 Staff: ${interaction.user.tag}
 📝 Razón: ${reason}`);
     }
   }
