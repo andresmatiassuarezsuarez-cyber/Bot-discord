@@ -27,4 +27,3 @@ export default {
     interaction.reply(`🔇 **${user.tag}** ha sido muteado por **${minutes} minutos**.`);
   }
 };
-

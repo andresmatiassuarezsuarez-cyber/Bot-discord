@@ -29,6 +29,10 @@ for (const folder of commandFolders) {
   for (const file of commandFiles) {
     const filePath = path.join(folderPath, file);
     const command = (await import(`file://${filePath}`)).default;
+    if (!command?.data?.name) {
+      console.warn(`⚠️ Comando omitido (sin data): ${file}`);
+      continue;
+    }
     client.commands.set(command.data.name, command);
   }
 }

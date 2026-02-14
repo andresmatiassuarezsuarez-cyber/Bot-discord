@@ -35,4 +35,3 @@ export default {
     interaction.reply(`⛔ **${user.tag}** fue baneado.\n📝 Razón: **${reason}**`);
   }
 };
-

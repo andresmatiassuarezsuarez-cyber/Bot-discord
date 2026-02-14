@@ -2,21 +2,18 @@ import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("unmute")
-    .setDescription("Quita el mute a un usuario.")
+    .setName("unwarn")
+    .setDescription("Elimina una advertencia de un usuario.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .addUserOption(option =>
       option.setName("usuario")
-        .setDescription("Usuario a desmutear")
+        .setDescription("Usuario al que eliminar la advertencia")
         .setRequired(true)
     ),
 
   async execute(interaction) {
     const user = interaction.options.getUser("usuario");
-    const member = await interaction.guild.members.fetch(user.id);
 
-    await member.timeout(null);
-
-    interaction.reply(`🔊 **${user.tag}** ha sido desmuteado.`);
+    interaction.reply(`✅ Se eliminó la advertencia de **${user.tag}**.`);
   }
 };
