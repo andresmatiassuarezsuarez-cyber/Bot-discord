@@ -13,6 +13,12 @@ const __dirname = path.dirname(__filename);
 const commandsPath = path.join(__dirname, "src", "commands");
 const commands = [];
 
+// Verificar que la carpeta existe (evita crash en Railway)
+if (!fs.existsSync(commandsPath)) {
+  console.error(`❌ ERROR: No existe la carpeta de comandos en: ${commandsPath}`);
+  process.exit(1);
+}
+
 // Leer carpetas dentro de /src/commands
 const commandFolders = fs.readdirSync(commandsPath);
 
@@ -60,3 +66,4 @@ try {
 } catch (error) {
   console.error("❌ Error registrando comandos:", error);
 }
+
