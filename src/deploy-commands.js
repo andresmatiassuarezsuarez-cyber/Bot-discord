@@ -5,24 +5,47 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from './config.js';
 
+// Necesario para rutas en ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const commands = [];
+// Ruta a la carpeta de comandos
 const commandsPath = path.join(__dirname, 'commands');
+const commands = [];
+
+// Leer carpetas dentro de /commands
 const commandFolders = fs.readdirSync(commandsPath);
 
 for (const folder of commandFolders) {
   const folderPath = path.join(commandsPath, folder);
-  const commandFiles = fs.readdirSync(folderPath).filter(f => f.endsWith('.js'));
+
+  // Ignorar archivos sueltos
+  if (!fs.lstatSync(folderPath).isDirectory()) continue;
+
+  const commandFiles = fs
+    .readdirSync(folderPath)
+    .filter(file => file.endsWith('.js'));
 
   for (const file of commandFiles) {
     const filePath = path.join(folderPath, file);
-    const command = (await import(`file://${filePath}`)).default;
-    commands.push(command.data.toJSON());
+
+    try {
+      const commandModule = await import(`file://${filePath}`);
+      const command = commandModule.default;
+
+      if (!command?.data) {
+        console.warn(`⚠️ El archivo ${file} no exporta "data". Saltado.`);
+        continue;
+      }
+
+      commands.push(command.data.toJSON());
+    } catch (err) {
+      console.error(`❌ Error cargando el comando ${file}:`, err);
+    }
   }
 }
 
+// REST API para registrar comandos
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
 try {
@@ -33,9 +56,7 @@ try {
     { body: commands }
   );
 
-  console.log('✅ Comandos registrados correctamente.');
+  console.log(`✅ ${commands.length} comandos registrados correctamente.`);
 } catch (error) {
-  console.error(error);
+  console.error('❌ Error registrando comandos:', error);
 }
-
-
