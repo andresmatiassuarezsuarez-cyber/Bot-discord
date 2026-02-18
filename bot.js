@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// ❗ ELIMINADO keepAlive.js porque NO existe
+// import './keepAlive.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,8 +20,8 @@ export const client = new Client({
 
 client.commands = new Collection();
 
-// Cargar comandos
-const commandsPath = path.join(__dirname, 'commands');
+// 📌 RUTA CORRECTA DE COMANDOS
+const commandsPath = path.join(__dirname, 'src', 'commands');
 const commandFolders = fs.readdirSync(commandsPath);
 
 for (const folder of commandFolders) {
@@ -29,16 +31,18 @@ for (const folder of commandFolders) {
   for (const file of commandFiles) {
     const filePath = path.join(folderPath, file);
     const command = (await import(`file://${filePath}`)).default;
+
     if (!command?.data?.name) {
       console.warn(`⚠️ Comando omitido (sin data): ${file}`);
       continue;
     }
+
     client.commands.set(command.data.name, command);
   }
 }
 
-// Cargar eventos
-const eventsPath = path.join(__dirname, 'events');
+// 📌 RUTA CORRECTA DE EVENTOS
+const eventsPath = path.join(__dirname, 'src', 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'));
 
 for (const file of eventFiles) {
@@ -53,3 +57,4 @@ for (const file of eventFiles) {
 }
 
 client.login(process.env.TOKEN);
+
