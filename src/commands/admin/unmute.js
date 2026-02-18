@@ -9,6 +9,8 @@ export default {
     .setName("unmute")
     .setDescription("Quita el mute (timeout) a un usuario.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
+
+    // ORDEN CORRECTO SEGÚN DISCORD
     .addUserOption(option =>
       option
         .setName("usuario")
@@ -17,14 +19,14 @@ export default {
     )
     .addStringOption(option =>
       option
-        .setName("id")
-        .setDescription("ID del usuario a desmutear (si no lo seleccionas arriba)")
+        .setName("razon")
+        .setDescription("Razón del unmute")
         .setRequired(false)
     )
     .addStringOption(option =>
       option
-        .setName("razon")
-        .setDescription("Razón del unmute")
+        .setName("id")
+        .setDescription("ID del usuario a desmutear (si no lo seleccionas arriba)")
         .setRequired(false)
     ),
 
@@ -66,10 +68,8 @@ export default {
       });
     }
 
-    // Quitar el timeout
     await member.timeout(null, reason);
 
-    // Embed DM
     const dmEmbed = new EmbedBuilder()
       .setColor("#00ff99")
       .setTitle("🔊 Has sido desmuteado")
@@ -83,24 +83,14 @@ export default {
 
     await user.send({ embeds: [dmEmbed] }).catch(() => {});
 
-    // Embed público
     const embed = new EmbedBuilder()
       .setColor("#00ff99")
       .setTitle("🔊 Usuario Desmuteado")
       .setThumbnail(user.displayAvatarURL({ size: 1024 }))
       .addFields(
-        {
-          name: "👤 Usuario",
-          value: `${user.tag} (${user.id})`
-        },
-        {
-          name: "📝 Razón",
-          value: reason
-        },
-        {
-          name: "👮 Moderador",
-          value: interaction.user.tag
-        }
+        { name: "👤 Usuario", value: `${user.tag} (${user.id})` },
+        { name: "📝 Razón", value: reason },
+        { name: "👮 Moderador", value: interaction.user.tag }
       )
       .setFooter({ text: "Acción de moderación ejecutada" })
       .setTimestamp();
@@ -108,3 +98,4 @@ export default {
     await interaction.reply({ embeds: [embed] });
   }
 };
+

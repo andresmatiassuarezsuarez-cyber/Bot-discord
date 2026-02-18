@@ -11,18 +11,7 @@ export default {
     .setName("mute")
     .setDescription("Silencia temporalmente a un usuario.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-    .addUserOption(option =>
-      option
-        .setName("usuario")
-        .setDescription("Selecciona al usuario a mutear")
-        .setRequired(false)
-    )
-    .addStringOption(option =>
-      option
-        .setName("id")
-        .setDescription("ID del usuario a mutear")
-        .setRequired(false)
-    )
+    // ✅ PRIMERO LAS OPCIONES OBLIGATORIAS
     .addIntegerOption(option =>
       option
         .setName("tiempo")
@@ -34,6 +23,19 @@ export default {
         .setName("razon")
         .setDescription("Razón del mute")
         .setRequired(true)
+    )
+    // ✅ LUEGO LAS OPCIONALES
+    .addUserOption(option =>
+      option
+        .setName("usuario")
+        .setDescription("Selecciona al usuario a mutear")
+        .setRequired(false)
+    )
+    .addStringOption(option =>
+      option
+        .setName("id")
+        .setDescription("ID del usuario a mutear")
+        .setRequired(false)
     ),
 
   async execute(interaction) {
@@ -70,7 +72,6 @@ export default {
 
     const durationMs = minutes * 60 * 1000;
 
-    // Guardar registro
     const filePath = path.resolve("src/data/mutes.json");
     const db = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
@@ -84,10 +85,6 @@ export default {
 
     fs.writeFileSync(filePath, JSON.stringify(db, null, 2));
 
-    // Aplicar mute
-    await member.timeout(durationMs, reason);
-
-    // Embed público
     const embed = new EmbedBuilder()
       .setColor("#ffcc00")
       .setTitle("🔇 Usuario Muteado")
@@ -102,4 +99,3 @@ export default {
     await interaction.reply({ embeds: [embed] });
   }
 };
-

@@ -9,6 +9,16 @@ export default {
     .setName("kick")
     .setDescription("Expulsa a un usuario del servidor.")
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
+
+    // ✅ PRIMERO LA OPCIÓN OBLIGATORIA
+    .addStringOption(option =>
+      option
+        .setName("razon")
+        .setDescription("Razón del kick")
+        .setRequired(true)
+    )
+
+    // ✅ LUEGO LAS OPCIONALES
     .addUserOption(option =>
       option
         .setName("usuario")
@@ -20,12 +30,6 @@ export default {
         .setName("id")
         .setDescription("ID del usuario a expulsar (si no lo seleccionas arriba)")
         .setRequired(false)
-    )
-    .addStringOption(option =>
-      option
-        .setName("razon")
-        .setDescription("Razón del kick")
-        .setRequired(true)
     ),
 
   async execute(interaction) {
@@ -33,7 +37,6 @@ export default {
     const idOption = interaction.options.getString("id");
     const reason = interaction.options.getString("razon");
 
-    // Validación: debe elegir usuario o ID
     if (!userOption && !idOption) {
       return interaction.reply({
         content: "⚠️ Debes seleccionar un usuario **o** escribir una **ID**.",
@@ -51,7 +54,6 @@ export default {
       });
     }
 
-    // Intentar obtener al miembro del servidor
     const member = await interaction.guild.members.fetch(user.id).catch(() => null);
 
     if (!member) {
@@ -68,11 +70,9 @@ export default {
       });
     }
 
-    // Crear invitación nueva al servidor
     let invite;
     try {
-      const channel = interaction.channel;
-      invite = await channel.createInvite({
+      invite = await interaction.channel.createInvite({
         maxAge: 0,
         maxUses: 1,
         reason: "Invitación generada para usuario expulsado"
@@ -81,7 +81,6 @@ export default {
       invite = null;
     }
 
-    // Embed de mensaje privado
     const dmEmbed = new EmbedBuilder()
       .setColor("#ff9900")
       .setTitle("⚠️ Has sido expulsado del servidor")
@@ -97,27 +96,16 @@ export default {
 
     await user.send({ embeds: [dmEmbed] }).catch(() => {});
 
-    // Expulsar al usuario
     await member.kick(reason);
 
-    // Embed público
     const embed = new EmbedBuilder()
       .setColor("#ff9900")
       .setTitle("⚠️ Usuario Expulsado")
       .setThumbnail(user.displayAvatarURL({ size: 1024 }))
       .addFields(
-        {
-          name: "👤 Usuario",
-          value: `${user.tag} (${user.id})`
-        },
-        {
-          name: "📝 Razón",
-          value: reason
-        },
-        {
-          name: "👮 Moderador",
-          value: interaction.user.tag
-        }
+        { name: "👤 Usuario", value: `${user.tag} (${user.id})` },
+        { name: "📝 Razón", value: reason },
+        { name: "👮 Moderador", value: interaction.user.tag }
       )
       .setFooter({ text: "Acción de moderación ejecutada" })
       .setTimestamp();
@@ -125,3 +113,4 @@ export default {
     await interaction.reply({ embeds: [embed] });
   }
 };
+
